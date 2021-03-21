@@ -23,7 +23,14 @@ app.get('/lembretes', (req, res) => {
     // Devolve os lembretes/coisas para o cliente
     res.send(lembretes);
 
-    //{texto: "Fazer café"}
+   
+
+});
+
+// Envia os lembretes para o cliente
+app.put('/lembretes', (req, res) => {
+
+     //{texto: "Fazer café"}
 
     // Colocando uma atribuição ({}) em texto, não vai valer o objeto inteiro, a
     // estrutura do json vai ser inspecionada e só vai pegar o valor da chave 
@@ -46,11 +53,6 @@ app.get('/lembretes', (req, res) => {
     }
 
     res.status(201).send(lembretes[contador]);
-
-});
-
-// Envia os lembretes para o cliente
-app.put('/lembretes', (req, res) => {
 
 
 })

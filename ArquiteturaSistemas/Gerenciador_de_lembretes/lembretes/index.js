@@ -55,7 +55,7 @@ app.put('/lembretes', (req, res) => {
     res.status(201).send(lembretes[contador]);
 
 
-})
+});
 
 // Inicia o servidor, ele está "escutando", esperando requisições chegarem;
 // porta 4000 escolhida arbitrariamente

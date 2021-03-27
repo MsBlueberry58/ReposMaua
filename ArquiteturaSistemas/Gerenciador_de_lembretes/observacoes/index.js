@@ -1,13 +1,13 @@
 const express = require ('express');
 
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 
 // Import nomeado, está atribuindo um apelido ao atributo, um nome 
 // para esse contexto
-const {v4: uuid} = require ('uuid');
+const {v4: uuidv4} = require ('uuid');
 
 const app = express();
-app.use(bodyParser.json);
+app.use(bodyParser.json());
 
 // Definindo a base de dados de memória volátil
 /*
@@ -23,7 +23,7 @@ app.use(bodyParser.json);
         }
     }
  */
-const observacoesPorLembreteID = {}
+const observacoesPorLembreteID = {};
 
 app.put('/lembretes/:id/observacoes', (req, res) => {
 
@@ -43,14 +43,19 @@ app.put('/lembretes/:id/observacoes', (req, res) => {
     observacoesDoLembreteAtual.push({id: idObs, texto});
 
     // Se não existia, é preenchida; se existia, é atualizada
-    observacoesDoLembreteID[req.params.id] = observacoesDoLembreteAtual;
-    
+    observacoesPorLembreteID[req.params.id] = observacoesDoLembreteAtual;
+
     // CREATED
-    res.status(201)
+    res.status(201).send(observacoesDoLembreteAtual);
 });
 
+// Vamos devolver só a coleção mesmo; ou devolve a coleção que já existe (relacionada com o id),
+// ou uma coleção vaiza
 app.get('/lembretes/:id/observacoes', (req, res) => {
 
+    // Pegando as observações do lembrete cujo id está na URL
+    res.send(observacoesPorLembreteID[req.params.id] || []);
+
 });
 
-app.listen(5000, () => console.log ("Microserviço observações, Porta 5000"))
+app.listen(5000, () => console.log("Microserviço observações, Porta 5000"));

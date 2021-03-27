@@ -5,27 +5,16 @@ const bodyParser = require('body-parser');
 // Import nomeado, está atribuindo um apelido ao atributo, um nome 
 // para esse contexto
 const {v4: uuidv4} = require ('uuid');
+const axios = require ('axios');
+
 
 const app = express();
 app.use(bodyParser.json());
 
-// Definindo a base de dados de memória volátil
-/*
-    {
-        1: {
-            {id: a, texto: Entre 14h e 15h},
-            {id: b, texto: Outra obs}
-        },
 
-        2: {
-            {id: a, texto: blabalba},
-            {id: b, texto: pipippopopo}
-        }
-    }
- */
 const observacoesPorLembreteID = {};
 
-app.put('/lembretes/:id/observacoes', (req, res) => {
+app.put('/lembretes/:id/observacoes', async (req, res) => {
 
     // Gerando um id com o uuid v4; vai enviar o id de lembrete e depois a observação
     const idObs = uuidv4();
@@ -45,6 +34,13 @@ app.put('/lembretes/:id/observacoes', (req, res) => {
     // Se não existia, é preenchida; se existia, é atualizada
     observacoesPorLembreteID[req.params.id] = observacoesDoLembreteAtual;
 
+    await axios.post('http://localhost:6000/eventos', {
+        tipo: "ObservacaoCriada",
+        dados: {
+            id: idObs, texto, lembreteId: req.params.id
+        }
+    });
+
     // CREATED
     res.status(201).send(observacoesDoLembreteAtual);
 });
@@ -57,5 +53,12 @@ app.get('/lembretes/:id/observacoes', (req, res) => {
     res.send(observacoesPorLembreteID[req.params.id] || []);
 
 });
+
+// Por enquanto, observações não faz nada com o evento, só recebe e printa
+app.post ('/eventos', (req, res) => {
+    console.log(req.body);
+    res.status(200).send({msg: 'ok'});
+  });
+
 
 app.listen(5000, () => console.log("Microserviço observações, Porta 5000"));

@@ -8,13 +8,15 @@ const axios = require('axios');
 const app = express();
 app.use(express.json());
 
+const eventos = [];
+
 
 // Alguém faz um post no barramento de eventos, e o barramento de eventos
 // devolve/espelha, isso que quer dizer com eco
 app.post('/eventos', (req, res) => {
 
     const evento = req.body;
-    console.log(evento);
+    eventos.push(evento);
     // Envia o evento para o microsserviço de lembretes
     axios.post('http://localhost:4000/eventos', evento);
     // Envia o evento para o microsserviço de observações
@@ -28,6 +30,9 @@ app.post('/eventos', (req, res) => {
 
 });
 
-
+app.get('/eventos', (req, res) => {
+    res.send(eventos);
+  })
+  
 
 app.listen(10000, () => console.log("Event Bus, Porta 10000"));

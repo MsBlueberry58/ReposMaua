@@ -37,7 +37,7 @@ app.put('/lembretes', async (req, res) => {
     }
 
     // Para enviar uma requisição/disparar uma requisição HTTP
-    await axios.post('http://localhost:6000/eventos', {
+    await axios.post('http://localhost:10000/eventos', {
         tipo: "LembreteCriado",
         dados: { contador, texto }
     });

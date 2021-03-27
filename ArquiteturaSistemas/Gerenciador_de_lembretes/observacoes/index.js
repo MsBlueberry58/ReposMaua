@@ -34,7 +34,7 @@ app.put('/lembretes/:id/observacoes', async (req, res) => {
     // Se não existia, é preenchida; se existia, é atualizada
     observacoesPorLembreteID[req.params.id] = observacoesDoLembreteAtual;
 
-    await axios.post('http://localhost:6000/eventos', {
+    await axios.post('http://localhost:10000/eventos', {
         tipo: "ObservacaoCriada",
         dados: {
             id: idObs, texto, lembreteId: req.params.id

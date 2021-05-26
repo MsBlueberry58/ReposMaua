@@ -11,7 +11,7 @@ var contador = 0;
 const usuarios = [];
 
 // Apresentando os dados pro cliente
-app.get('/login', (req, res) => {
+app.get('/usuarios', (req, res) => {
     res.send(usuarios);
 });
 

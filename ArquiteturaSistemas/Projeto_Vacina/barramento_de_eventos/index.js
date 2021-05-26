@@ -4,8 +4,10 @@ app.use(express.json());
 const axios = require('axios');
 require('dotenv').config({path: 'C:/Users/leafe/Documents/ReposMaua/ArquiteturaSistemas/Projeto_Vacina/.env'});
 
+const eventos = [];
 
-app.post('/barramento', (req, res) => {
+
+app.post('/eventos', (req, res) => {
     const evento = req.body;
 
     console.log(evento);
@@ -25,5 +27,10 @@ app.post('/barramento', (req, res) => {
     res.status(200).send({msg: 'ok'});
 });
 
+app.get('/eventos', (req, res) => {
+    res.send(eventos);
+  })
+
+  
 
 app.listen(process.env.PORT_BARRAMENTO, () => console.log(`Microsservico de Barramento de Eventos. Porta ${process.env.PORT_BARRAMENTO}.`));

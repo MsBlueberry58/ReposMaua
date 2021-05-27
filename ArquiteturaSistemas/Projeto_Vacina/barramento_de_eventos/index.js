@@ -7,29 +7,29 @@ require('dotenv').config({path: 'C:/Users/leafe/Documents/ReposMaua/ArquiteturaS
 const eventos = [];
 
 
-app.post('/eventos', (req, res) => {
-    const evento = req.body;
 
-    console.log(evento);
+app.post('/eventos', (req, res) => {
+
+    const evento = req.body;
+    eventos.push(evento);
 
     // Envia o evento para o mss de alerta de vacinas
     axios.post(`http://localhost:${process.env.PORT_ALERTA}/eventos`, evento);
-
     // Envia o evento para o mss de cadastro
     axios.post(`http://localhost:${process.env.PORT_CADASTRO}/eventos`, evento);
-
     // Envia o evento para o mss de customizacao de vacinas
     axios.post(`http://localhost:${process.env.PORT_CUSTOM}/eventos`, evento);  
-
     // Envia o evento para o mss de estoque
     axios.post(`http://localhost:${process.env.PORT_ESTOQUE}/eventos`, evento);
 
-    res.status(200).send({msg: 'ok'});
+    res.status(200).send({msg: 'Deu tudo certo'});
 });
+
 
 app.get('/eventos', (req, res) => {
     res.send(eventos);
   })
+
 
   
 

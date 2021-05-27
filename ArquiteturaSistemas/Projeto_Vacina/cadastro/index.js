@@ -34,15 +34,17 @@ app.put('/cadastrar', async (req, res) => {
         }
         contador++;
 
-    }
-
-    // Enviando para o barramento de eventos
+        // Enviando para o barramento de eventos
     await axios.post(`http://localhost:${process.env.PORT_BARRAMENTO}/eventos`, {
         tipo: "UsuarioCadastrado",
         usuarios: { contador, usuario: req.body }
     });
+    
 
     res.status(201).send({msg: "Usuário criado com sucesso!"});
+
+    }
+
 
 });
 

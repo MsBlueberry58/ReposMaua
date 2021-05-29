@@ -4,39 +4,107 @@ app.use(express.json());
 const axios = require('axios');
 require('dotenv').config({path: 'C:/Users/leafe/Documents/ReposMaua/ArquiteturaSistemas/Projeto_Vacina/.env'});
 
-const baseIdades = {};
-const idadePorUsuarioID = {};
+const baseIdades = [];
+const baseAlertas = {};
+
+contador = 0;
+id = 0;
+
 
 const funcoes = {
-    UsuarioCadastrado: (usuario) => {
-      baseIdades[usuario.usuario.RG] = usuario.aniversario;
+    CalcularIdade: (aniversario) => {
+
+      var data = new Date();
+      var idade = 0;
+      var niver_formatado = aniversario.split('/');
+
+      var dia = Number(niver_formatado[0]);
+      var mes = Number(niver_formatado[1]);
+      var ano = Number(niver_formatado[2]);
+
+      var dif_ano = data.getFullYear() - ano;
+      var dif_mes = data.getMonth() - mes;
+      var dif_dia = data.getDay() - dia;
+      
+     if (dif_mes < 0){
+         idade = dif_ano - 1;
+     }
+     else if (dif_mes === 0){
+        if (dif_dia < 0){
+          idade = dif_ano - 1;
+      } else{
+        idade = dif_ano;
+      }
+     }
+     else if (dif_mes > 0){
+       idade = dif_ano;
+     };
+
+     return idade;
+
+    },
+    GerarAlerta: (idade_user, idade_vacina) => {
+      if (idade_user === idade_vacina){
+        return "A vacina está disponível para você!"
+      }
+      else{
+        return "Sua vacina ainda não está disponível."
+      }
     }
   };
 
+// Printa as idades dos usuários cadastrados
+app.get('/idades', (req, res) => {
 
-  app.get('/idades', async (req, res) => {
-      res.send(baseIdades)
+  res.send(baseIdades);
+
   })
 
-  app.put('/usuarios/:contador/idade', async (req, res) => {
+// TA DANDO ERRADO - Requisição que vai informar aos alertas a faixa etária que vai ser vacinado 
+app.put('/alertar',  (req, res) => {
 
-    // Extraindo o texto
-    const { texto } = req.body;
-    const idadeDoUsuarioAtual = idadePorUsuarioID[req.params.aniversario] || [];
-    idadeDoUsuarioAtual.push({texto, status: 'Falta calcular a idade'});
-    // Se não existia, é preenchida; se existia, é atualizada
-    idadePorUsuarioID[req.params.aniversario] = idadeDoUsuarioAtual;
+  faixa = req.body.idade;
+  console.log(faixa);
 
-    await axios.post(`http://localhost:${process.env.PORT_BARRAMENTO}/eventos`, {
-        tipo: "PegarIdade",
-        dados: {
-           texto, aniversario: req.body.aniversario, status: 'Falta calcular a idade'
-        }
-    });
+})
 
-    res.status(201).send(idadeDoUsuarioAtual);
-});
+// TA DANDO ERRADO - Requisição que vai retornar o status da disponibilidade das vacinas dos usuários
+/*app.get('/alertar', (req, res) => {
 
+  const status = baseIdades[contador]['Status'] || [];
+
+  baseIdades.forEach(idade_user => {  
+
+    status.push(funcoes.GerarAlerta(idade, faixa));
+    baseIdades[contador]['Status'] = status;
+  })
+})*/
+
+app.get('/alertas', (req, res) => {
+
+  baseAlertas[id] = {
+    id, status: req.body
+  }
+
+  baseIdades.forEach(idade_user => {
+    console.log("IDADE DO FOR EACH: " + idade_user);
+    baseAlertas[id] = funcoes.GerarAlerta(idade_user,45);
+    id++;
+  })
+
+  res.send(baseAlertas);
+
+})
+
+app.post('/eventos', (req, res) => {
+
+  niver = req.body.usuarios.usuario.aniversario;
+
+  idade = funcoes.CalcularIdade(niver);
+  baseIdades[contador] = idade;
+  contador++;
+
+})
 
 app.listen(process.env.PORT_ALERTA, async () => {
     

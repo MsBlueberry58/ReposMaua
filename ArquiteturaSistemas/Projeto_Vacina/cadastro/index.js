@@ -5,7 +5,7 @@ app.use(express.json());
 const axios = require('axios');
 
 // Zerando o contador (cada cadastro vai ter um id)
-var contador = 0;
+contador = 0;
 
 // Banco de dados (volátil por enquanto)
 const usuarios = [];
@@ -32,19 +32,17 @@ app.put('/cadastrar', async (req, res) => {
         usuarios[contador] = {
             contador, usuario: req.body
         }
-        contador++;
-
+      
         // Enviando para o barramento de eventos
     await axios.post(`http://localhost:${process.env.PORT_BARRAMENTO}/eventos`, {
         tipo: "UsuarioCadastrado",
         usuarios: { contador, usuario: req.body }
     });
     
+    contador++;
 
     res.status(201).send({msg: "Usuário criado com sucesso!"});
-
     }
-
 
 });
 

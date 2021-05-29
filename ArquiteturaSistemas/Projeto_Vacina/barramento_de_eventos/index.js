@@ -7,7 +7,6 @@ require('dotenv').config({path: 'C:/Users/leafe/Documents/ReposMaua/ArquiteturaS
 const eventos = [];
 
 
-
 app.post('/eventos', (req, res) => {
 
     const evento = req.body;
@@ -25,12 +24,9 @@ app.post('/eventos', (req, res) => {
     res.status(200).send({msg: 'Deu tudo certo'});
 });
 
-
 app.get('/eventos', (req, res) => {
     res.send(eventos);
   })
-
-
   
-
+  
 app.listen(process.env.PORT_BARRAMENTO, () => console.log(`Microsservico de Barramento de Eventos. Porta ${process.env.PORT_BARRAMENTO}.`));

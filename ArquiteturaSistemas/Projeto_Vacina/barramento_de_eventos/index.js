@@ -28,5 +28,4 @@ app.get('/eventos', (req, res) => {
     res.send(eventos);
   })
   
-  
 app.listen(process.env.PORT_BARRAMENTO, () => console.log(`Microsservico de Barramento de Eventos. Porta ${process.env.PORT_BARRAMENTO}.`));

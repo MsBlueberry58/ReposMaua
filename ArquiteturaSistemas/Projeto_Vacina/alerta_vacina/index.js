@@ -60,26 +60,17 @@ app.get('/idades', (req, res) => {
 
   })
 
-// TA DANDO ERRADO - Requisição que vai informar aos alertas a faixa etária que vai ser vacinado 
+// Requisição que vai informar aos alertas a faixa etária que vai ser vacinado 
 app.put('/alertar',  (req, res) => {
 
   faixa = req.body.idade;
   console.log(faixa);
 
+  res.status(201).send({msg: "Faixa etária alterada com sucesso!"})
+
 })
 
-// TA DANDO ERRADO - Requisição que vai retornar o status da disponibilidade das vacinas dos usuários
-/*app.get('/alertar', (req, res) => {
-
-  const status = baseIdades[contador]['Status'] || [];
-
-  baseIdades.forEach(idade_user => {  
-
-    status.push(funcoes.GerarAlerta(idade, faixa));
-    baseIdades[contador]['Status'] = status;
-  })
-})*/
-
+// Requisição que vai informar o status dos alertas dos usuários
 app.get('/alertas', (req, res) => {
 
   baseAlertas[id] = {
@@ -88,7 +79,7 @@ app.get('/alertas', (req, res) => {
 
   baseIdades.forEach(idade_user => {
     console.log("IDADE DO FOR EACH: " + idade_user);
-    baseAlertas[id] = funcoes.GerarAlerta(idade_user,45);
+    baseAlertas[id] = funcoes.GerarAlerta(idade_user, faixa);
     id++;
   })
 

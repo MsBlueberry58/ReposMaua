@@ -51,5 +51,5 @@ app.post('/eventos', (req, res) => {
     console.log(req.body);
     res.status(200).send({msg: 'Evento ok'});
   });
-
+  
 app.listen(process.env.PORT_CADASTRO, () => console.log(`Microsservico de Cadastro. Porta ${process.env.PORT_CADASTRO}.`));

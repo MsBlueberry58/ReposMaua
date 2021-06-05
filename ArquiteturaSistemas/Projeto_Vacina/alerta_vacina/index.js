@@ -4,9 +4,10 @@ app.use(express.json());
 const axios = require('axios');
 require('dotenv').config({path: 'C:/Users/leafe/Documents/ReposMaua/ArquiteturaSistemas/Projeto_Vacina/.env'});
 
-const baseIdades = [];
+const baseIdades = {};
 const baseAlertas = {};
 
+vacDisp = false;
 contador = 0;
 id = 0;
 
@@ -45,10 +46,10 @@ const funcoes = {
     },
     GerarAlerta: (idade_user, idade_vacina) => {
       if (idade_user === idade_vacina){
-        return "A vacina está disponível para você!"
+        return true;
       }
       else{
-        return "Sua vacina ainda não está disponível."
+        return false;
       }
     }
   };
@@ -73,26 +74,44 @@ app.put('/alertar',  (req, res) => {
 // Requisição que vai informar o status dos alertas dos usuários
 app.get('/alertas', (req, res) => {
 
-  baseAlertas[id] = {
-    id, status: req.body
+for (id = 0; id < Object.keys(baseIdades).length; id++) {
+
+  if(baseIdades[id].verificado === "Ainda não foi verificado."){ 
+
+    status = "A definir";
+    baseAlertas[id] = {
+      id, status
+    }
+
+    msg = funcoes.GerarAlerta(baseIdades[id].idade, faixa);
+
+      if(msg){
+        baseAlertas[id].status = "Sua vacina está disponível!"
+      }
+      else{
+        baseAlertas[id].status = "Infelizmente, sua vacina não está disponível."
+      }
+
+  baseIdades[id].verificado = "Sua idade já foi verificada.";
+
   }
+ }
 
-  baseIdades.forEach(idade_user => {
-    console.log("IDADE DO FOR EACH: " + idade_user);
-    baseAlertas[id] = funcoes.GerarAlerta(idade_user, faixa);
-    id++;
-  })
-
-  res.send(baseAlertas);
+res.send(baseAlertas);
 
 })
 
 app.post('/eventos', (req, res) => {
 
+  verificado = "Ainda não foi verificado.";
   niver = req.body.usuarios.usuario.aniversario;
 
   idade = funcoes.CalcularIdade(niver);
-  baseIdades[contador] = idade;
+
+  baseIdades[contador] = {
+    idade, verificado
+  };
+
   contador++;
 
 })

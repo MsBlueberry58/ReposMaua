@@ -8,11 +8,9 @@ const baseIdades = {};
 const baseAlertas = {};
 const baseRG = {};
 
-
 vacDisp = false;
 contador = 0;
 id = 0;
-
 
 const funcoes = {
     CalcularIdade: (aniversario) => {

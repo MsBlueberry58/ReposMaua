@@ -6,6 +6,8 @@ require('dotenv').config({path: 'C:/Users/leafe/Documents/ReposMaua/ArquiteturaS
 
 const baseIdades = {};
 const baseAlertas = {};
+const baseRG = {};
+
 
 vacDisp = false;
 contador = 0;
@@ -61,11 +63,18 @@ app.get('/idades', (req, res) => {
 
   })
 
-// Requisição que vai informar aos alertas a faixa etária que vai ser vacinado 
+// Requisição que vai informar aos alertas a faixa etária que vai ser vacinada
 app.put('/alertar',  (req, res) => {
 
   faixa = req.body.idade;
   console.log(faixa);
+
+  for (id = 0; id < Object.keys(baseIdades).length; id++) {
+
+    baseIdades[id].verificado = "Idade ainda não verificada.";
+    baseAlertas[id].status = "A definir";
+
+  }
 
   res.status(201).send({msg: "Faixa etária alterada com sucesso!"})
 
@@ -76,11 +85,13 @@ app.get('/alertas', (req, res) => {
 
 for (id = 0; id < Object.keys(baseIdades).length; id++) {
 
-  if(baseIdades[id].verificado === "Ainda não foi verificado."){ 
+  if(baseIdades[id].verificado === "Idade ainda não verificada."){ 
 
     status = "A definir";
+    RG = baseIdades[id].rg;
+
     baseAlertas[id] = {
-      id, status
+      id, RG, status
     }
 
     msg = funcoes.GerarAlerta(baseIdades[id].idade, faixa);
@@ -89,10 +100,10 @@ for (id = 0; id < Object.keys(baseIdades).length; id++) {
         baseAlertas[id].status = "Sua vacina está disponível!"
       }
       else{
-        baseAlertas[id].status = "Infelizmente, sua vacina não está disponível."
+        baseAlertas[id].status = "Infelizmente, sua vacina ainda não está disponível."
       }
 
-  baseIdades[id].verificado = "Sua idade já foi verificada.";
+  baseIdades[id].verificado = "Idade do usuário já verificada.";
 
   }
  }
@@ -103,13 +114,14 @@ res.send(baseAlertas);
 
 app.post('/eventos', (req, res) => {
 
-  verificado = "Ainda não foi verificado.";
+  verificado = "Idade ainda não verificada.";
   niver = req.body.usuarios.usuario.aniversario;
+  rg = req.body.usuarios.usuario.RG;
 
   idade = funcoes.CalcularIdade(niver);
 
   baseIdades[contador] = {
-    idade, verificado
+    rg, idade, verificado
   };
 
   contador++;

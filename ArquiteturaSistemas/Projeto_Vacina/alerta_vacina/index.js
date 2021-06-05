@@ -67,7 +67,6 @@ app.get('/idades', (req, res) => {
 app.put('/alertar',  (req, res) => {
 
   faixa = req.body.idade;
-  console.log(faixa);
 
   for (id = 0; id < Object.keys(baseIdades).length; id++) {
 

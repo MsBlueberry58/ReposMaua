@@ -33,7 +33,7 @@ app.put('/cadastrar', async (req, res) => {
             contador, usuario: req.body
         }
       
-        // Enviando para o barramento de eventos
+    // Enviando para o barramento de eventos
     await axios.post(`http://localhost:${process.env.PORT_BARRAMENTO}/eventos`, {
         tipo: "UsuarioCadastrado",
         usuarios: { contador, usuario: req.body }
@@ -48,8 +48,7 @@ app.put('/cadastrar', async (req, res) => {
 
 // Por enquanto, não faz nada com o evento, só recebe e printa
 app.post('/eventos', (req, res) => {
-    console.log(req.body);
-    res.status(200).send({msg: 'Evento ok'});
+    console.log("Evento ok");
   });
   
 app.listen(process.env.PORT_CADASTRO, () => console.log(`Microsservico de Cadastro. Porta ${process.env.PORT_CADASTRO}.`));

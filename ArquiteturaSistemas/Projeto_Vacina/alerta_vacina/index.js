@@ -11,6 +11,7 @@ const baseRG = {};
 vacDisp = false;
 contador = 0;
 id = 0;
+id_alerta = 0;
 
 const funcoes = {
     CalcularIdade: (aniversario) => {
@@ -66,11 +67,15 @@ app.put('/alertar',  (req, res) => {
 
   faixa = req.body.idade;
 
-  for (id = 0; id < Object.keys(baseIdades).length; id++) {
+  if(Object.keys(baseAlertas).length !== 0){
 
-    baseIdades[id].verificado = "Idade ainda não verificada.";
-    baseAlertas[id].status = "A definir";
+    for (id = 0; id < Object.keys(baseIdades).length; id++) {
 
+      baseIdades[id].verificado = "Idade ainda não verificada.";
+      baseAlertas[id].status = "A definir";
+  
+    }
+    
   }
 
   res.status(201).send({msg: "Faixa etária alterada com sucesso!"})
@@ -78,7 +83,7 @@ app.put('/alertar',  (req, res) => {
 })
 
 // Requisição que vai informar o status dos alertas dos usuários
-app.get('/alertas', (req, res) => {
+app.get('/alertas', async (req, res) => {
 
 for (id = 0; id < Object.keys(baseIdades).length; id++) {
 
@@ -102,12 +107,24 @@ for (id = 0; id < Object.keys(baseIdades).length; id++) {
 
   baseIdades[id].verificado = "Idade do usuário já verificada.";
 
+  await axios.post(`http://localhost:${process.env.PORT_BARRAMENTO}/eventos`, 
+  {
+    tipo: "AlertaCriado",
+    dados: { id: id_alerta, RG: baseIdades[id].rg, idade: baseIdades[id].idade, faixa_atual: faixa }
+  }
+  );
+
+  id_alerta++;
+
   }
  }
 
 res.send(baseAlertas);
 
 })
+
+// Estabelece a conexão entre o MSS e o endpoint do barramento; precisa ter "um em cada lado"
+// Percorre um evento de cada vez (o array)
 
 app.post('/eventos', (req, res) => {
 

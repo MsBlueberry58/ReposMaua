@@ -14,12 +14,16 @@ app.post('/eventos', (req, res) => {
 
     // Envia o evento para o mss de alerta de vacinas
     axios.post(`http://localhost:${process.env.PORT_ALERTA}/eventos`, evento);
+
     // Envia o evento para o mss de cadastro
     axios.post(`http://localhost:${process.env.PORT_CADASTRO}/eventos`, evento);
+
     // Envia o evento para o mss de censo
     axios.post(`http://localhost:${process.env.PORT_CENSO}/eventos`, evento);
+
     // Envia o evento para o mss de customizacao de vacinas
     axios.post(`http://localhost:${process.env.PORT_CUSTOM}/eventos`, evento);  
+    
     // Envia o evento para o mss de estoque
     axios.post(`http://localhost:${process.env.PORT_ESTOQUE}/eventos`, evento);
 

@@ -5,30 +5,58 @@ const app = express();
 app.use(express.json());
 const axios = require('axios');
 
-baseAniversarios = [];
+baseCenso = [];
 idCenso = 0;
+baseIdades = [];
+
+const funcoes = {
+    groupBy: (list, keyGetter) => {
+        const map = new Map();
+        list.forEach((item) => {
+             const key = keyGetter(item);
+             const collection = map.get(key);
+             if (!collection) {
+                 map.set(key, [item]);
+             } else {
+                 collection.push(item);
+             }
+        });
+        return map;
+    }
+}
 
 app.get('/censo', (req, res) => {
 
+  
+    
+
+    baseCenso[idCenso] = {
+        Faixa_etaria: 0,
+        Quantidade_de_pessoas: 0,
+        };
+
+    //baseIdades.forEach(funcoes.PercorrerCenso())
+
+    const grouped = groupBy(baseCenso, idade => Faixa_etaria);
+    res.send(grouped.get(21));
+
+
+
+
 })
-
-
 
 
 app.post('/eventos', (req, res) => {
 
     if(req.body.tipo === "UsuarioCadastrado"){
+       
+    idadeCenso = req.body.usuario.idade;
 
-        
-        data_nascimento = req.body.usuarios.usuario.aniversario;
-        data_nascimento = new moment(data_nascimento, "DD/MM/YYYY");
-        hoje = new moment();
+    console.log("Idade cadastrada: " + idadeCenso);
 
-        idadeCenso = hoje.diff(data_nascimento, "year");
-             
-
+    baseIdades.push(idadeCenso);     
+    
     }
-
   
   })
 

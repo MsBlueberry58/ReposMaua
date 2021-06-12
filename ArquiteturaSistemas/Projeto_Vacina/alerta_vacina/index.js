@@ -14,37 +14,6 @@ id = 0;
 id_alerta = 0;
 
 const funcoes = {
-    CalcularIdade: (aniversario) => {
-
-      var data = new Date();
-      var idade = 0;
-      var niver_formatado = aniversario.split('/');
-
-      var dia = Number(niver_formatado[0]);
-      var mes = Number(niver_formatado[1]);
-      var ano = Number(niver_formatado[2]);
-
-      var dif_ano = data.getFullYear() - ano;
-      var dif_mes = data.getMonth() - mes;
-      var dif_dia = data.getDay() - dia;
-      
-     if (dif_mes < 0){
-         idade = dif_ano - 1;
-     }
-     else if (dif_mes === 0){
-        if (dif_dia < 0){
-          idade = dif_ano - 1;
-      } else{
-        idade = dif_ano;
-      }
-     }
-     else if (dif_mes > 0){
-       idade = dif_ano;
-     };
-
-     return idade;
-
-    },
     GerarAlerta: (idade_user, idade_vacina) => {
       if (idade_user === idade_vacina){
         return true;
@@ -107,13 +76,6 @@ for (id = 0; id < Object.keys(baseIdades).length; id++) {
 
   baseIdades[id].verificado = "Idade do usuário já verificada.";
 
-  await axios.post(`http://localhost:${process.env.PORT_BARRAMENTO}/eventos`, 
-  {
-    tipo: "AlertaCriado",
-    dados: { id: id_alerta, RG: baseIdades[id].rg, idade: baseIdades[id].idade, faixa_atual: faixa }
-  }
-  );
-
   id_alerta++;
 
   }
@@ -128,18 +90,18 @@ res.send(baseAlertas);
 
 app.post('/eventos', (req, res) => {
 
-  verificado = "Idade ainda não verificada.";
-  niver = req.body.usuarios.usuario.aniversario;
-  rg = req.body.usuarios.usuario.RG;
+  if(req.body.tipo === "UsuarioCadastrado"){
+    
+    rg = req.body.usuario.dados.RG;
+    idade = req.body.usuario.idade;
+    verificado = "Idade ainda não verificada.";
 
-  idade = funcoes.CalcularIdade(niver);
-
-  baseIdades[contador] = {
+    baseIdades[contador] = {
     rg, idade, verificado
-  };
+   };
 
-  contador++;
-
+    contador++;
+  }
 })
 
 app.listen(process.env.PORT_ALERTA, async () => {
